@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <!-- Font Awesome -->
+    <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css"
+    rel="stylesheet"
+    />
+</head>
+<body>
+    <div class="container" id="app">
+        <div class="row mt-3 justify-content-center ">
+            <h3 class="text-center mt-5 mb-4">Calculator Vue JS</h3>
+            <div class="col-12 ">
+                <div class="card">
+                    <div class="card-body ">
+                       <div class="mb-4 d-flex justify-content-end rounded text-white p-4 align-content-center bg-dark" style="font-size: 25px;">
+                            {{answer}}
+                       </div>
+                      <div class="row">
+                        <div class="col-md-6 form-group">
+                            <input type="text" class="form-control" v-model="calculator.firstNum" placeholder="Enter the first Number">
+                            <small class="text-danger" v-show="validation.firstNumState"> *Number Required</small>
+                            </div>
+                            <div class="col-md-6 form-group">
+                                <input type="text" class="form-control" v-model="calculator.secondNum" placeholder="Enter the first Number">
+                                <small class="text-danger" v-show="validation.secondNumState"> *Number Required</small>
+                            </div>
+                      </div>
+                     
+                      <div class="row">
+                        <div class="form-group col-md-4 mt-4">
+                            <select name="" id="" class="form-control" v-model="calculator.operator">
+                                <option value="" disabled selected>Choose</option>
+                                <option value="+">+</option>
+                                <option value="-">-</option>
+                                <option value="*">*</option>
+                                <option value="/">/</option>  
+                            </select>
+                            <small class="text-danger" v-show="validation.operatorState"> *option Required</small>
+                          </div>
+                          <div class="col-md-4 form-group mt-4">
+                              <button class="btn btn-success w-100 " @click="calculate()">Calculate</button>
+                          </div>
+                          <div class="col-md-4 form-group mt-4">
+                            <button class="btn btn-danger w-100 "  @click="clearForm()">Clear</button>
+                        </div>
+                      </div>
+                      <div class="col-md-12 form-group mt-4">
+                        <button class="btn btn-primary w-100 " @click="save()" :disabled="saveState">Save</button>
+                    </div>
+                    </div>
+                    <div class="card-footer mt-3" >
+                        <h4>Records</h3>
+                        <p class="text-muted" v-for="record in records">{{record}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+    let app = new Vue({
+        el:"#app",
+        data:{
+            calculator:{
+                firstNum: '',
+                secondNum: '',
+                operator: '',
+            },
+            answer:0,
+            records:[],
+            validation:{
+                firstNumState: false,
+                secondNumState: false,
+                operatorState: false,
+            },
+            saveState:true,
+        },
+        methods: {
+            calculate(){
+                this.validationCheck();
+                if(this.calculator.firstNum != '' && this.calculator.secondNum != '' && this.calculator.operator != '' ){
+                    
+                    result = this.operation();
+                this.answer =  `${this.calculator.firstNum}
+                ${this.calculator.operator}
+                 ${this.calculator.secondNum}
+             = 
+                ${result}`;
+                this.clear();
+                this.saveState = false;
+                }
+            },
+            validationCheck(){
+                this.validation.firstNumState = this.calculator.firstNum == '' ? true : false;
+                this.validation.secondNumState = this.calculator.secondNum == '' ? true : false;
+                this.validation.operatorState = this.calculator.operator == '' ? true : false;
+            },
+            operation(){
+                num1 = parseInt(this.calculator.firstNum);
+                // console.log(num1);
+                num2 = parseInt(this.calculator.secondNum);
+                switch(this.calculator.operator){
+                    case '+':
+                    return num1 + num2;
+                    break;
+                    case '-':
+                    return num1 - num2;
+                    break;
+                    case '*':
+                    return num1 * num2;
+                    break;
+                    case '/':
+                    return num1 / num2;
+                    break;
+                }
+            },
+            clear(){
+                this.calculator.firstNum = '';
+                this.calculator.secondNum = '';
+                this.calculator.operator = '';
+            },
+            clearForm(){
+                this.answer = 0;
+                this.validation.firstNumState = false;
+                this.validation.secondNumState =false;
+                this.validation.operatorState = false;
+                this.clear();
+                
+            },
+            save(){
+                if(!this.saveState){
+                    this.records.push(result);
+                    this.saveState = true;
+                }
+                
+                
+            }
+        },
+    })
+</script>
+
+</body>
+</html>
